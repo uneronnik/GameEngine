@@ -6,14 +6,18 @@ namespace GameEngine
 {
     class Component
     {
-        GameObject _base;
+        public GameObject Base { get; set; }
         public bool Enabled { get; set; }
 
-        public void Start()
+        public virtual void Start()
         {
             
         }
-        public void Update()
+        public virtual void FixedUpdate()
+        {
+
+        }
+        public virtual void Update()
         {
             
         }

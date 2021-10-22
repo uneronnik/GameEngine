@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace GameEngine
@@ -11,7 +12,9 @@ namespace GameEngine
         public delegate void StartHandler();
         public static event StartHandler Started;
         static List<GameObject> _objects = new List<GameObject>();
-        static IReadOnlyList<GameObject> Objects { get => _objects.AsReadOnly(); }
+        static public Graphics graphics;
+        static public GameObject Camera { get; set; } 
+        static public IReadOnlyList<GameObject> Objects { get => _objects.AsReadOnly(); }
         public static void CreateObject(GameObject gameObject)
         {
             if (_objects.Contains(gameObject))
@@ -54,6 +57,18 @@ namespace GameEngine
         public static void Update()
         {
             Updated?.Invoke();
+        }
+        public static void DeleteObject(GameObject gameObject)
+        {
+            if (!_objects.Contains(gameObject))
+                return;
+            foreach (var component in gameObject.Components)
+            {
+                
+                Updated -= component.Update;
+                Started -= component.Start;
+            }
+            _objects.Remove(gameObject);
         }
     }
 }
