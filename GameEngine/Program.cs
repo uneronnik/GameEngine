@@ -23,17 +23,23 @@ namespace GameEngine
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
-            
+
+
+
+
+
+            for (int i = 0; i < 1; i++)
+            {
+                GameObject spriteTest = new GameObject($"spriteTest{i}");
+                spriteTest.Location = new Point(i * 10, 0);
+                spriteTest.Size = new Point(900, 900);
+                spriteTest.AddComponent(new SpriteRenderer("aqua staff.png"));
+                Engine.CreateObject(spriteTest);
+            }
 
             
-            
-
-            GameObject spriteTest = new GameObject("spriteTest");
-            spriteTest.Size = new Point(1920, 1080);
-            spriteTest.AddComponent(new SpriteRenderer("png-clipart-dot-dot.png"));
-            Engine.CreateObject(spriteTest);
-
+            Engine.Camera.Location = new Point(-50, -100);
+            Engine.Camera.AddComponent(new CameraMover(10));
             Application.Run(new Form1());
 
 

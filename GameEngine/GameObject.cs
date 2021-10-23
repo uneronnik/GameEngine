@@ -8,9 +8,9 @@ namespace GameEngine
     // Prefabs,
     sealed class GameObject
     {
-        public Point Location { get; set; }
-        public Point Rotation { get; set; }
-        public Point Size { get; set; }
+        public PointF Location { get; set; }
+        public PointF Rotation { get; set; }
+        public PointF Size { get; set; }
         public string Tag { get; set; }
 
         public string Name { get; private set; }
@@ -42,6 +42,8 @@ namespace GameEngine
         public void AddComponent(Component component)
         {
             component.Base = this;
+            Engine.Updated += component.Update;
+            Engine.Started += component.Start;
             _components.Add(component);
         }
         public void RemoveComponent(Component component)

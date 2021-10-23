@@ -13,23 +13,24 @@ namespace GameEngine
         public static event StartHandler Started;
         static List<GameObject> _objects = new List<GameObject>();
         static public Graphics graphics;
-        static public GameObject Camera { get; set; } 
+        static public Form1 form;
+        static public GameObject Camera { get; set; } = new GameObject("camera"); 
         static public IReadOnlyList<GameObject> Objects { get => _objects.AsReadOnly(); }
-        public static void CreateObject(GameObject gameObject)
+        public static void CreateObject(GameObject instance)
         {
-            if (_objects.Contains(gameObject))
+            if (_objects.Contains(instance))
                 return;
             foreach (var item in _objects)
             {
-                if (item.Name == gameObject.Name)
+                if (item.Name == instance.Name)
                     return;
             }
-            foreach (var component in gameObject.Components)
+            foreach (var component in instance.Components)
             {
                 Updated += component.Update;
                 Started += component.Start;
             }
-            _objects.Add(gameObject);
+            _objects.Add(instance);
         }
         
         public static GameObject GetObjectByName(string name)

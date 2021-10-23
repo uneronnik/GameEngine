@@ -4,12 +4,15 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace GameEngine
 {
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
@@ -17,21 +20,38 @@ namespace GameEngine
             
             Width = 1920;
             Height = 1080;
-            Engine.graphics = Graphics.FromImage(new Bitmap(Width, Height));
+            Engine.form = this;
+            
+            
         }
-        void StartGameCycle()
+        async void StartGameCycle()
         {
-
             while (true)
             {
+                
+                using (Bitmap bitmap = new Bitmap(Width, Height))
+                {
+                    Engine.graphics = Graphics.FromImage(bitmap);
+                    Engine.graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                    Engine.Update();
+                    if (pictureBox1.Image != bitmap)
+                    {
+                        pictureBox1.Image = bitmap;
+                        pictureBox1.Refresh();
+                    }
 
-                Engine.graphics.Clear(Color.White);
-                Engine.Update();
-                BackgroundImage = new Bitmap(Width, Height, Engine.graphics);
-                this.Refresh();
+                }
+                
+                await Task.Delay(1);  
             }
+            
         }
-
+        
+        private void ChangeImage(Bitmap bitmap)
+        {
+            
+        }
+        
         private void button1_Click(object sender, EventArgs e)
         {
             
@@ -45,6 +65,16 @@ namespace GameEngine
         private void Form1_Shown(object sender, EventArgs e)
         {
             StartGameCycle();
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            Input.KeyDown(e);
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            Input.KeyUp(e);
         }
     }
 }
