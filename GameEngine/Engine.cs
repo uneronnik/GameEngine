@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GameEngine
 {
@@ -12,7 +14,7 @@ namespace GameEngine
         public delegate void StartHandler();
         public static event StartHandler Started;
         static List<GameObject> _objects = new List<GameObject>();
-        static public Graphics graphics;
+        static public BufferedGraphics graphicsBuffer;
         static public Form1 form;
         static public GameObject Camera { get; set; } = new GameObject("camera"); 
         static public IReadOnlyList<GameObject> Objects { get => _objects.AsReadOnly(); }
@@ -55,9 +57,10 @@ namespace GameEngine
             return objectsWithCorrectTag;
         }
 
-        public static void Update()
+        public async static void Update()
         {
             Updated?.Invoke();
+            
         }
         public static void DeleteObject(GameObject gameObject)
         {

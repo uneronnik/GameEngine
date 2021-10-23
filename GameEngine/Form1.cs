@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Drawing.Drawing2D;
 
 namespace GameEngine
 {
@@ -18,7 +19,7 @@ namespace GameEngine
             InitializeComponent();
 
             
-            Width = 1920;
+            Width = 1980;
             Height = 1080;
             Engine.form = this;
             
@@ -28,29 +29,29 @@ namespace GameEngine
         {
             while (true)
             {
-                
+
                 using (Bitmap bitmap = new Bitmap(Width, Height))
                 {
-                    Engine.graphics = Graphics.FromImage(bitmap);
-                    Engine.graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                    Engine.Update();
-                    if (pictureBox1.Image != bitmap)
-                    {
-                        pictureBox1.Image = bitmap;
-                        pictureBox1.Refresh();
-                    }
 
+                    using (Graphics graphics = CreateGraphics())
+                    {
+                        Engine.graphicsBuffer = BufferedGraphicsManager.Current.Allocate(graphics, new Rectangle(0, 0, Width, Height));
+                        Engine.graphicsBuffer.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                        Engine.graphicsBuffer.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                    }
+                    await Task.Run(() =>
+                    {
+                        Engine.Update();
+                    });
+
+                    pictureBox1.Refresh();
                 }
                 
-                await Task.Delay(1);  
             }
             
         }
         
-        private void ChangeImage(Bitmap bitmap)
-        {
-            
-        }
+       
         
         private void button1_Click(object sender, EventArgs e)
         {
@@ -75,6 +76,11 @@ namespace GameEngine
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             Input.KeyUp(e);
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            Engine.graphicsBuffer.Render(e.Graphics);
         }
     }
 }
