@@ -28,23 +28,26 @@ namespace GameEngine
 
 
             GameObject spriteTest = new GameObject($"spriteTest");
-            spriteTest.Location = new Point(0, 0);
-            spriteTest.Size = new Point(900, 900);
-            spriteTest.AddComponent(new SpriteRenderer("aqua staff.png"));
-            spriteTest.AddComponent(new CameraMover(10));
-            Engine.CreateObject(spriteTest);
-            
-            for (int i = 0; i < 5; i++)
+            spriteTest.Location = new Point(-300, -300);
+            spriteTest.Scale = new Point(1000, 1000);
+            spriteTest.AddComponent(new SpriteRenderer("aqua staff.png", 0));
+            spriteTest.AddComponent(new CameraMover(5));
+            //Engine.CreateObject(spriteTest);
+            for (int i = 0; i < 3; i++)
             {
-                GameObject spriteTest2 = new GameObject($"spriteTest{i}");
-                spriteTest2.Location = new Point(i * 900 - 300, 0);
-                spriteTest2.Size = new Point(900, 900);
-                spriteTest2.AddComponent(new SpriteRenderer("aqua staff.png"));
-                Engine.CreateObject(spriteTest2);
+                for (int j = 0; j < 25; j++)
+                {
+                    GameObject spriteTest2 = new GameObject($"spriteTest{i}{j}");
+                    spriteTest2.Location = new Point(j * 100, i * 200); ;
+                    spriteTest2.Scale = new Point(20, 20);
+                    spriteTest2.AddComponent(new SpriteRenderer("aqua staff.png", 3 - i));
+                    Engine.CreateObject(spriteTest2);
+                }
             }
-
             
             Engine.Camera.Location = new Point(0, 0);
+            Engine.Camera.AddComponent(new CameraMover(20));
+
             Application.Run(new Form1());
 
 

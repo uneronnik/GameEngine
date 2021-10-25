@@ -57,10 +57,65 @@ namespace GameEngine
             return objectsWithCorrectTag;
         }
 
-        public async static void Update()
+        public static void Update()
         {
-            Updated?.Invoke();
+            Task graphicsTask = new Task(() =>
+            {
+                
+                foreach (var component in Camera.Components)
+                {
+                    component.Update();
+                }
+                List<SpriteRenderer> spriteRenderers = new List<SpriteRenderer>();
+                foreach (var gameObject in Objects)
+                {
+                    foreach (var component in gameObject.Components)
+                    {
+                        if (component is SpriteRenderer)
+                        {
+                            spriteRenderers.Add((SpriteRenderer)component);
+                        }
+                    }
+                }
+                spriteRenderers.Sort((left, right) => 
+                {
+                    if (left.OrderInRender > right.OrderInRender)
+                        return -1;
+                    else if (left.OrderInRender < right.OrderInRender)
+                        return 1;
+                    else
+                        return 0; 
+                });
+                foreach (var renderer in spriteRenderers)
+                {
+                    lock (graphicsBuffer)
+                    {
+                        renderer.Update();
+                    }
+                }
+
+
+            });
+            Task otherTask = new Task(() =>
+            {
+
+                foreach (var gameObject in Objects)
+                {
+                    foreach (var component in gameObject.Components)
+                    {
+                        if (!(component is SpriteRenderer))
+                            component.Update();
+                    }
+                }
+
+            });
+
             
+            graphicsTask.Start();
+            otherTask.Start();
+            Task.WaitAll(graphicsTask, otherTask);
+
+
         }
         public static void DeleteObject(GameObject gameObject)
         {

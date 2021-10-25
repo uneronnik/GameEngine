@@ -8,12 +8,15 @@ namespace GameEngine
     // Prefabs,
     sealed class GameObject
     {
+        
         public PointF Location { get; set; }
         public PointF Rotation { get; set; }
-        public PointF Size { get; set; }
+        public PointF Scale { get; set; }
+        
         public string Tag { get; set; }
 
         public string Name { get; private set; }
+        public bool Enabled { get; set; }
         private List<Component> _components = new List<Component>();
 
         public GameObject(string name, string tag = "")
