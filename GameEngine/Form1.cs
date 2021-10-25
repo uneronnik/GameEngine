@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Drawing.Drawing2D;
+using System.Diagnostics;
 
 namespace GameEngine
 {
     public partial class Form1 : Form
     {
-
+        private Stopwatch _deltaTimeStopwatch = new Stopwatch();
         public Form1()
         {
             InitializeComponent();
@@ -32,6 +33,7 @@ namespace GameEngine
 
                 Engine.graphicsBuffer = BufferedGraphicsManager.Current.Allocate(graphics, new Rectangle(0, 0, Width, Height));
             }
+            _deltaTimeStopwatch.Start();
         }
         delegate void GraphicsChangingHandler();
         event GraphicsChangingHandler GraphicsChanged;
@@ -49,13 +51,20 @@ namespace GameEngine
                     
                 
                 pictureBox1.Show();
-               
+
+
+                _deltaTimeStopwatch.Stop();
+                Time.deltaTime = (float)_deltaTimeStopwatch.Elapsed.TotalSeconds;
+                _deltaTimeStopwatch.Restart();
                 await Task.Run(() =>
                 {
-                    //lock(Engine.graphicsBuffer)
+                    
+                    
                         Engine.Update();
+
                     
                 });
+                
 
                 GraphicsChanged?.Invoke();
                 DateTime endTime = DateTime.Now;

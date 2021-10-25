@@ -46,7 +46,7 @@ namespace GameEngine
             }
             
             Engine.Camera.Location = new Point(0, 0);
-            Engine.Camera.AddComponent(new CameraMover(20));
+            Engine.Camera.AddComponent(new CameraMover(500));
 
             Application.Run(new Form1());
 
