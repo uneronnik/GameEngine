@@ -19,6 +19,7 @@ namespace GameEngine
             //_sprite = Image.FromFile(spritePath);
             
         }
+        
         private Bitmap CropAlpha(Bitmap bitmap)
         {
             Point up = new Point();
@@ -91,6 +92,7 @@ namespace GameEngine
             Point leftUpCorner = new Point(left.X, up.Y);
             Point rightDownCorner = new Point(right.X, down.Y);
             Bitmap newBitmap = bitmap.Clone(new Rectangle(leftUpCorner, new Size(rightDownCorner.X - leftUpCorner.X, rightDownCorner.Y - leftUpCorner.Y)), PixelFormat.Format32bppArgb);
+            bitmap.Dispose();
             return newBitmap;
         }
         private bool ContainsTransparent(Bitmap image)
@@ -101,10 +103,12 @@ namespace GameEngine
                 {
                     if (image.GetPixel(x, y).A != 255)
                     {
+                        image.Dispose();
                         return true;
                     }
                 }
             }
+            image.Dispose();
             return false;
         }
         public override void Update()
@@ -128,6 +132,7 @@ namespace GameEngine
                     Engine.graphicsBuffer.Graphics.CompositingMode = CompositingMode.SourceCopy;
 
                 Engine.graphicsBuffer.Graphics.DrawImage(_sprite, objectRectangle);
+                spriteBitmap.Dispose();
 
                 Engine.graphicsBuffer.Graphics.CompositingMode = CompositingMode.SourceOver;
             }

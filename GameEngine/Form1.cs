@@ -23,62 +23,39 @@ namespace GameEngine
             Width = 1980;
             Height = 1080;
             Engine.form = this;
-            //SetStyle(ControlStyles.OptimizedDoubleBuffer |
-            //    ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
 
             UpdateStyles();
-            GraphicsChanged += UpdateGraphics;
+            
             using (Graphics graphics = pictureBox1.CreateGraphics())
             {
 
                 Engine.graphicsBuffer = BufferedGraphicsManager.Current.Allocate(graphics, new Rectangle(0, 0, Width, Height));
             }
             _deltaTimeStopwatch.Start();
+            
+            Engine.graphicsBuffer.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
         }
-        delegate void GraphicsChangingHandler();
-        event GraphicsChangingHandler GraphicsChanged;
         async void StartGameCycle()
         {
             while (true)
             {
+                // Изменение размера Формы не меняет видимую область, как нужно
                 DateTime startTime = DateTime.Now;
                 
                 Engine.graphicsBuffer.Graphics.Clear(Color.White);
-                Engine.graphicsBuffer.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-                Engine.graphicsBuffer.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                Engine.graphicsBuffer.Graphics.SmoothingMode = SmoothingMode.None;
-                
-                    
-                
-                pictureBox1.Show();
-
 
                 _deltaTimeStopwatch.Stop();
                 Time.deltaTime = (float)_deltaTimeStopwatch.Elapsed.TotalSeconds;
                 _deltaTimeStopwatch.Restart();
-                await Task.Run(() =>
-                {
-                    
-                    
-                        Engine.Update();
 
-                    
-                });
-                
+                await Task.Run(Engine.Update);
 
-                GraphicsChanged?.Invoke();
+                UpdateGraphics();
+
                 DateTime endTime = DateTime.Now;
                 label1.Text = ((int)(new TimeSpan(0, 0, 0, 1) / (endTime - startTime))).ToString();
-                
-                
-                if (GC.GetTotalMemory(true) == 7340032000)
-                {
-                    Task task = new Task(() =>
-                    {
-                        GC.Collect();
-                    });
-                    task.Start();
-                }
             }
             
         }
@@ -119,6 +96,22 @@ namespace GameEngine
         {
             lock(Engine.graphicsBuffer)
                 Engine.graphicsBuffer.Render(e.Graphics);
+        }
+
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+            if (Engine.graphicsBuffer == null)
+                return;
+            lock (Engine.graphicsBuffer)
+            {
+                using (Graphics graphics = pictureBox1.CreateGraphics())
+                {
+                    Engine.graphicsBuffer = BufferedGraphicsManager.Current.Allocate(graphics, new Rectangle(0, 0, Width, Height));
+                }
+                Engine.graphicsBuffer.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                Engine.graphicsBuffer.Graphics.Clear(Color.White);
+                UpdateGraphics();
+            }
         }
     }
 }

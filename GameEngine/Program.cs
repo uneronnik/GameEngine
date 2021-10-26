@@ -28,14 +28,14 @@ namespace GameEngine
 
 
             GameObject spriteTest = new GameObject($"spriteTest");
-            spriteTest.Location = new Point(-300, -300);
+            spriteTest.Location = new Point(-1000, -1000);
             spriteTest.Scale = new Point(1000, 1000);
             spriteTest.AddComponent(new SpriteRenderer("aqua staff.png", 0));
-            spriteTest.AddComponent(new CameraMover(5));
-            //Engine.CreateObject(spriteTest);
+            spriteTest.AddComponent(new Mover(250));
+            Engine.CreateObject(spriteTest);
             for (int i = 0; i < 3; i++)
             {
-                for (int j = 0; j < 25; j++)
+                for (int j = 0; j < 50; j++)
                 {
                     GameObject spriteTest2 = new GameObject($"spriteTest{i}{j}");
                     spriteTest2.Location = new Point(j * 100, i * 200); ;
@@ -46,7 +46,7 @@ namespace GameEngine
             }
             
             Engine.Camera.Location = new Point(0, 0);
-            Engine.Camera.AddComponent(new CameraMover(500));
+            Engine.Camera.AddComponent(new Mover(500));
 
             Application.Run(new Form1());
 
