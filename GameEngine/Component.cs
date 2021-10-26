@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GameEngine
+﻿namespace GameEngine
 {
     class Component
     {
@@ -13,14 +9,29 @@ namespace GameEngine
         {
             
         }
-        public virtual void FixedUpdate()
-        {
-
-        }
         public virtual void Update()
         {
             
         }
-        
+        public virtual void OnTrigerEnter(GameObject gameObject)
+        {
+
+        }
+        public virtual void OnTrigerStay(GameObject gameObject)
+        {
+
+        }
+        public virtual void OnTrigerExit(GameObject gameObject)
+        {
+
+        }
+        public virtual void OnColliderEnter(GameObject gameObject)
+        {
+
+        }
+        public virtual void OnColliderExit(GameObject gameObject)
+        {
+
+        }
     }
 }
