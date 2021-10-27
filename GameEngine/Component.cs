@@ -29,6 +29,10 @@
         {
 
         }
+        public virtual void OnColliderStay(GameObject gameObject)
+        {
+
+        }
         public virtual void OnColliderExit(GameObject gameObject)
         {
 
